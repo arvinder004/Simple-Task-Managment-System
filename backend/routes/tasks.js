@@ -7,14 +7,14 @@ const User = require('../models/User');
 
 router.post('/add-task', auth, async(req, res) => {
     try {
+        const userId = req.user
         const title = req.body.title;
         const description = req.body.description;
         const status = req.body.status;
         const priority = req.body.priority;
-        const assignedTo = req.body.assignedTo;
 
         const assignedUser = await User.findOne({
-            username: assignedTo
+            _id: userId
         });
 
         if(!assignedUser) {
@@ -28,7 +28,7 @@ router.post('/add-task', auth, async(req, res) => {
             description: description,
             status: status,
             priority: priority,
-            assignedTo: assignedUser._id
+            assignedTo: userId
         });
 
         res.json({
