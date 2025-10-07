@@ -9,9 +9,8 @@ router.post('/register', async(req, res) => {
     try {
         const username = req.body.username;
         const password = req.body.password;
-        const role = req.body.role;
 
-        if (!username || !password || !role) {
+        if (!username || !password) {
             return res.status(400).json({ 
                 message: "All fields are required" 
             });
@@ -28,8 +27,7 @@ router.post('/register', async(req, res) => {
 
         const user = new User({
             username: username,
-            password: hashedPassword,
-            role: role
+            password: hashedPassword
         });
 
         await user.save();
