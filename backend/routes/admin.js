@@ -6,6 +6,13 @@ const bcrypt = require('bcryptjs')
 const isAdmin = require("../controllers/isAdmin");
 const auth = require('../controllers/auth')
 
+/*
+Admins will be added directly in the database
+Admins cannot directly register themselves in the app
+Admins can login through the same endpoint as other users
+ */
+
+// endpoint to allow admin to view users
 router.get('/view-users', auth, isAdmin, async(req, res) => {
     try{
         const users = await User.find({
@@ -21,6 +28,7 @@ router.get('/view-users', auth, isAdmin, async(req, res) => {
     }
 })
 
+// endpoint to allow admin to add users
 router.post('/add-user', auth, isAdmin, async (req, res) => {
     try {
         const { username, password, role } = req.body;
@@ -52,6 +60,7 @@ router.post('/add-user', auth, isAdmin, async (req, res) => {
     }
 });
 
+// endpoint to allow admin to update users
 router.put('/update-user/:id', auth, isAdmin, async (req, res) => {
     try {
         const updates = req.body;
@@ -68,6 +77,7 @@ router.put('/update-user/:id', auth, isAdmin, async (req, res) => {
     }
 });
 
+// endpoint to allow admin to delete users
 router.delete('/delete-user/:id', auth, isAdmin, async (req, res) => {
     try {
         const user = await User.findByIdAndDelete(req.params.id);
@@ -85,6 +95,7 @@ router.delete('/delete-user/:id', auth, isAdmin, async (req, res) => {
 });
 
 
+// endpoint to allow admin to view task for a single user
 router.get('/user/:id/tasks', auth, isAdmin, async (req, res) => {
     try {
         const tasks = await Task.find({ assignedTo: req.params.id });
@@ -96,6 +107,7 @@ router.get('/user/:id/tasks', auth, isAdmin, async (req, res) => {
     }
 });
 
+// endpoint to allow admin to add task for a single user
 router.post('/user/:id/tasks', auth, isAdmin, async (req, res) => {
     try {
         const { title, description, status, priority, dueDate } = req.body;
@@ -124,6 +136,7 @@ router.post('/user/:id/tasks', auth, isAdmin, async (req, res) => {
     }
 });
 
+// endpoint to allow admin to update task for a single user
 router.put('/user/:id/tasks/:taskId', auth, isAdmin, async (req, res) => {
     try {
         const updates = req.body;
@@ -145,6 +158,7 @@ router.put('/user/:id/tasks/:taskId', auth, isAdmin, async (req, res) => {
     }
 });
 
+// endpoint to allow admin to delete task for a single user
 router.delete('/user/:id/tasks/:taskId', auth, isAdmin, async (req, res) => {
     try {
         const task = await Task.findOneAndDelete({ _id: req.params.taskId, assignedTo: req.params.id });

@@ -1,5 +1,6 @@
 const User = require("../models/User");
 
+// function to verify if the user is admin or not
 function isAdmin(req, res, next){
     if(req.user){
         User.findById(req.user).then(user =>{

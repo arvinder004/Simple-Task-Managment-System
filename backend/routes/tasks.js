@@ -5,6 +5,7 @@ const auth = require('../controllers/auth');
 const { translateAliases } = require('../models/User');
 const User = require('../models/User');
 
+// endpoint to add task for logged in user
 router.post('/add-task', auth, async(req, res) => {
     try {
         const userId = req.user
@@ -40,6 +41,7 @@ router.post('/add-task', auth, async(req, res) => {
     }
 });
 
+// endpoint to view task for logged in user
 router.get('/task', auth, async(req, res) => {
     try {
         const userId = req.user;
@@ -56,6 +58,7 @@ router.get('/task', auth, async(req, res) => {
     }
 });
 
+// endpoint to update task for logged in user
 router.put('/update-task/:id', auth, async(req, res) => {
     try{
         const taskId = req.params.id;
@@ -91,6 +94,7 @@ router.put('/update-task/:id', auth, async(req, res) => {
     }
 })
 
+// endpoint to delete task for logged in user
 router.delete('/delete-task/:id', auth, async(req, res) => {
     try{
         const taskId = req.params.id;

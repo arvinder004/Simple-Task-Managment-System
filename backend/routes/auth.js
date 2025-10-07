@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
-
+// endpoint to register a user with user role only
 router.post('/register', async(req, res) => {
     try {
         const username = req.body.username;
@@ -44,6 +44,7 @@ router.post('/register', async(req, res) => {
     }
 });
 
+// endpoint to login user and admin
 router.post('/login', async(req, res) => {
     try {
         const username = req.body.username;
