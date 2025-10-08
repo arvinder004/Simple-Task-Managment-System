@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getTasks, addTask, updateTask, deleteTask } from "../services/api";
 
-
-// Helper function to map priority to Tailwind classes
 const getPriorityClasses = (priority) => {
     switch (priority) {
         case "High":
@@ -42,7 +40,6 @@ const UserDashboard = () => {
   const [editingTask, setEditingTask] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Form state
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("To Do");
@@ -74,7 +71,6 @@ const UserDashboard = () => {
       setDescription(task.description);
       setStatus(task.status);
       setPriority(task.priority);
-      // Ensure date conversion handles null/undefined
       setDueDate(
         task.dueDate ? new Date(task.dueDate).toISOString().split("T")[0] : ""
       );
@@ -114,8 +110,6 @@ const UserDashboard = () => {
   };
 
   const handleDelete = async (id) => {
-    // IMPORTANT: Replacing window.confirm() with a custom modal is best practice in iframed environments.
-    // For now, retaining a simple check, but note that window.confirm is not ideal.
     if (window.confirm("Are you sure you want to delete this task?")) {
       try {
         await deleteTask(id);
@@ -136,12 +130,10 @@ const UserDashboard = () => {
 
   return (
     <div className="p-5 max-w-7xl mx-auto">
-      {/* 1. Header and Add Button */}
       <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
         <h2 className="text-3xl font-extrabold text-indigo-700 m-0">My Tasks</h2>
         <button
           onClick={() => openModal()}
-          // Tailwind equivalent of successColor (#10B981) and hover effect
           className="px-5 py-2 text-base bg-emerald-500 text-white font-semibold rounded-lg shadow-md
                      hover:bg-emerald-600 transition duration-200 transform hover:-translate-y-0.5"
         >
@@ -149,7 +141,6 @@ const UserDashboard = () => {
         </button>
       </div>
 
-      {/* 2. Task List Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {tasks.length === 0 ? (
           <p className="col-span-full text-center text-gray-500 text-lg py-12">
@@ -169,17 +160,14 @@ const UserDashboard = () => {
                     {task.title}
                 </div>
                 
-                {/* Priority Chip */}
                 <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold text-white uppercase tracking-wider mb-3 ${priorityClasses.chip}`}>
                     {task.priority}
                 </span>
 
-                {/* Description */}
                 <p className="text-sm italic text-gray-700 mb-4 h-14 overflow-hidden line-clamp-3">
                     {task.description}
                 </p>
                 
-                {/* Status and Due Date */}
                 <div className="flex justify-between items-start pt-3 mb-4 border-t border-gray-200">
                     <div className="text-sm text-gray-600">
                         <strong className="font-bold mr-1">Status:</strong> {task.status}
@@ -192,7 +180,6 @@ const UserDashboard = () => {
                     </div>
                 </div>
 
-                {/* Actions */}
                 <div className="pt-3 border-t border-gray-200 flex justify-end">
                   <button
                     onClick={() => openModal(task)}
@@ -203,7 +190,6 @@ const UserDashboard = () => {
                   </button>
                   <button 
                     onClick={() => handleDelete(task._id)}
-                    // Tailwind equivalent of accentColor (#DB2777)
                     className="px-4 py-2 bg-pink-600 text-white font-medium rounded-lg text-sm
                                hover:bg-pink-700 transition duration-200"
                   >
@@ -216,11 +202,8 @@ const UserDashboard = () => {
         )}
       </div>
 
-      {/* 3. Modal for Add/Edit Task */}
       {isModalOpen && (
-        // Modal Overlay (Fixed position, dark backdrop)
         <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-10 animate-fade-in">
-          {/* Modal Content */}
           <div className="bg-white p-8 rounded-xl w-11/12 max-w-xl shadow-2xl animate-slide-in">
             <h2 className="text-xl font-semibold text-indigo-600 mb-5 pb-3 border-b border-gray-200">
               {editingTask ? "Edit Task" : "Add Task"}
@@ -248,7 +231,6 @@ const UserDashboard = () => {
                 />
               </div>
               
-              {/* Status and Priority (Side-by-side in a flex container) */}
               <div className="flex gap-4 mb-4">
                 <div className="w-1/2">
                     <label className="block font-medium text-gray-700 mb-1">Status</label>
@@ -286,7 +268,6 @@ const UserDashboard = () => {
                 />
               </div>
 
-              {/* Modal Footer Buttons */}
               <div className="flex justify-end pt-4 border-t border-gray-100">
                 <button
                   type="button"
@@ -308,7 +289,6 @@ const UserDashboard = () => {
           </div>
         </div>
       )}
-      {/* Required keyframes for animations used in modal (faked for React in a single file) */}
       <style>{`
         @keyframes fadeIn {
             from { opacity: 0; }

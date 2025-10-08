@@ -33,14 +33,10 @@ export default function LoginPage(){
         setShowPassword(prev => !prev);
     };
 
-    // All original CSS-in-JS style objects have been removed.
-
     return (
-    // Full screen container with background gradient and centering
     <div className="min-h-screen h-screen flex justify-center items-center p-5 
                     bg-gradient-to-br from-blue-100 to-emerald-50 overflow-hidden">
       
-      {/* Login Card */}
       <div className="w-full max-w-md p-8 bg-white rounded-xl shadow-2xl transition-all duration-300 transform">
         <h2 className="text-2xl font-bold text-indigo-700 mb-6 text-center">
             Log In to TaskFlow
@@ -48,7 +44,6 @@ export default function LoginPage(){
         
         <form onSubmit={handleSubmit}>
           
-          {/* Username Input */}
           <div className="mb-5">
             <input
               type="text"
@@ -61,7 +56,6 @@ export default function LoginPage(){
             />
           </div>
           
-          {/* Password Input with Visibility Toggle */}
           <div className="mb-5">
             <div className="relative flex items-center">
               <input
@@ -70,7 +64,6 @@ export default function LoginPage(){
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                // Note: pr-10 for icon clearance
                 className="w-full p-3 pr-10 border border-gray-300 rounded-lg text-gray-700 
                          focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 outline-none"
               />
@@ -78,20 +71,17 @@ export default function LoginPage(){
                 onClick={togglePasswordVisibility}
                 className="absolute right-3 cursor-pointer text-gray-500 hover:text-indigo-600 transition duration-200 text-xl"
               >
-                {/* Emojis used for icon placeholder */}
                 {showPassword ? '🙈' : '👁️'} 
               </span>
             </div>
           </div>
           
-          {/* Error Message */}
           {error && (
             <p className="text-red-500 text-sm mb-4 text-center font-medium">
                 {error}
             </p>
           )}
           
-          {/* Login Button */}
           <button 
             type="submit" 
             disabled={loading}
@@ -106,7 +96,6 @@ export default function LoginPage(){
           </button>
         </form>
         
-        {/* Registration Link */}
         <div className="mt-6 text-center text-sm">
             <span className="text-gray-600">Don't have an account? </span>
             <Link to="/register" className="text-indigo-600 font-medium hover:text-indigo-800 transition duration-200"> 

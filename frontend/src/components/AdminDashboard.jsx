@@ -2,15 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllUsers, addUserByAdmin, updateUserByAdmin, deleteUserByAdmin } from '../services/api';
 
-// ----------------------------------------------------------------------
-// ROLE TAG UTILITY (Outputs Tailwind classes)
-// ----------------------------------------------------------------------
-
 const getRoleTagClasses = (role) => {
   const base = 'px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider';
   return role === 'admin'
-    ? `${base} bg-red-100 text-red-600` // Light Red background, Dark Red text
-    : `${base} bg-blue-100 text-blue-600`; // Light Blue background, Dark Blue text
+    ? `${base} bg-red-100 text-red-600`
+    : `${base} bg-blue-100 text-blue-600`;
 };
 
 const AdminDashboard = () => {
@@ -46,7 +42,6 @@ const AdminDashboard = () => {
     setIsModalOpen(true);
     if (user) {
       setEditingUser(user);
-      // Do NOT pre-fill the password for security reasons
       setFormData({ username: user.username, password: '', role: user.role }); 
     } else {
       resetForm();
@@ -72,7 +67,6 @@ const AdminDashboard = () => {
     try {
       const dataToSend = { ...formData };
       if (editingUser && !dataToSend.password) {
-        // If editing and password field is empty, remove it so the API doesn't clear the password
         delete dataToSend.password;
       }
       if (editingUser) {
@@ -98,7 +92,6 @@ const AdminDashboard = () => {
     }
   };
 
-
   if (loading) {
     return (
       <div className="min-h-screen flex justify-center items-center text-xl font-semibold text-indigo-600">
@@ -109,7 +102,6 @@ const AdminDashboard = () => {
 
   return (
     <div className="p-5 max-w-6xl mx-auto sm:p-10">
-      {/* 1. Header and Add Button (Responsive) */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 pb-4 border-b-2 border-gray-100 gap-4">
         <h2 className="text-2xl sm:text-3xl font-bold text-indigo-600">
           Admin Dashboard
@@ -122,7 +114,6 @@ const AdminDashboard = () => {
         </button>
       </div>
       
-      {/* 2. User List (Responsive Card Grid) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {users.length === 0 ? (
             <p className="col-span-full text-center text-gray-500 text-lg p-12">
@@ -164,7 +155,6 @@ const AdminDashboard = () => {
         )}
       </div>
 
-      {/* 3. Modal for Add/Edit User */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50 p-4 transition-opacity duration-300">
           <div className="bg-white p-6 sm:p-8 rounded-xl w-full max-w-md shadow-2xl transition-transform duration-300">
@@ -192,7 +182,6 @@ const AdminDashboard = () => {
                   value={formData.password}
                   onChange={handleInputChange}
                   placeholder={editingUser ? 'New Password (optional)' : 'Password'}
-                  // Only require password if adding a new user
                   {...(editingUser ? {} : { required: true })}
                   className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
                 />

@@ -4,22 +4,18 @@ import { getUserTasks, addUserTasks, updateUserTasks, deleteUserTasks } from '..
 
 const getPriorityClasses = (priority, type = 'chip') => {
   const baseChip = 'px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider';
-  // Combined styles for card: border, padding, shadow, transition, hover effects
   const baseCard = 'border rounded-xl p-5 shadow-lg transition-all duration-300 transform hover:shadow-xl hover:-translate-y-0.5';
 
   switch (priority) {
     case 'High':
-      // Red for High Priority
       return type === 'chip' 
         ? `${baseChip} bg-red-600 text-white` 
         : `${baseCard} bg-red-50 border-red-500`;
     case 'Medium':
-      // Amber/Orange for Medium Priority
       return type === 'chip' 
         ? `${baseChip} bg-amber-500 text-white` 
         : `${baseCard} bg-amber-50 border-amber-500`;
     case 'Low':
-      // Green for Low Priority
       return type === 'chip' 
         ? `${baseChip} bg-emerald-500 text-white` 
         : `${baseCard} bg-emerald-50 border-emerald-500`;
@@ -53,7 +49,6 @@ const UserTasksManagement = () => {
   const fetchTasks = async () => {
     setLoading(true);
     try {
-      // Using mock getUserTasks
       const response = await getUserTasks(userId); 
       setTasks(response.data.tasks || []);
     } catch (error) {
@@ -70,7 +65,6 @@ const UserTasksManagement = () => {
       setEditingTask(task);
       setFormData({
         ...task,
-        // Ensure date conversion handles null/undefined
         dueDate: task.dueDate ? new Date(task.dueDate).toISOString().split('T')[0] : ''
       });
     } else {
@@ -102,10 +96,8 @@ const UserTasksManagement = () => {
     e.preventDefault();
     try {
       if (editingTask) {
-        // Using mock updateUserTasks
         await updateUserTasks(userId, editingTask._id, formData); 
       } else {
-        // Using mock addUserTasks
         await addUserTasks(userId, formData); 
       }
       closeModal();
@@ -118,7 +110,6 @@ const UserTasksManagement = () => {
   const handleDelete = async (taskId) => {
     if (window.confirm('Are you sure you want to delete this task?')) {
       try {
-        // Using mock deleteUserTasks
         await deleteUserTasks(userId, taskId); 
         fetchTasks();
       } catch (error) {
@@ -137,7 +128,6 @@ const UserTasksManagement = () => {
 
   return (
     <div className="p-5 max-w-7xl mx-auto sm:p-10">
-      {/* 1. Header and Action Buttons */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 pb-4 border-b-2 border-gray-200 gap-4">
         <h2 className="text-2xl sm:text-3xl font-extrabold text-indigo-700">
           Tasks for User: <span className="text-gray-700 font-semibold">{userId}</span>
@@ -158,7 +148,6 @@ const UserTasksManagement = () => {
         </div>
       </div>
 
-      {/* 2. Task List (Responsive Grid) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {tasks.length === 0 ? (
           <p className="col-span-full text-center text-gray-500 text-lg p-12 bg-white rounded-xl shadow-inner">
@@ -169,17 +158,14 @@ const UserTasksManagement = () => {
             <div key={task._id} className={getPriorityClasses(task.priority, 'card')}>
               <h3 className="text-xl font-bold text-indigo-600 mb-2">{task.title}</h3>
               
-              {/* Priority Chip */}
               <span className={getPriorityClasses(task.priority, 'chip')}>
                 {task.priority}
               </span>
 
-              {/* Description */}
               <p className="text-gray-700 italic text-sm my-4 overflow-hidden max-h-[4.5em] line-clamp-3">
                 {task.description}
               </p>
               
-              {/* Status and Due Date (Responsive Layout) */}
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start pt-3 mb-4 border-t border-gray-200 text-sm">
                 <p className="text-gray-600 mb-1 sm:mb-0">
                   <strong className="font-bold text-gray-700 mr-1">Status:</strong> {task.status}
@@ -190,7 +176,6 @@ const UserTasksManagement = () => {
                 </p>
               </div>
 
-              {/* Actions */}
               <div className="flex gap-2 mt-4 pt-3 border-t border-gray-200">
                 <button
                   onClick={() => openModal(task)}
@@ -210,11 +195,8 @@ const UserTasksManagement = () => {
         )}
       </div>
 
-      {/* 3. Modal for Add/Edit Task */}
       {isModalOpen && (
-        // Modal Overlay 
         <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50 p-4 animate-fade-in">
-          {/* Modal Content */}
           <div className="bg-white p-6 sm:p-8 rounded-xl w-full max-w-md shadow-2xl animate-slide-in">
             <h2 className="text-xl font-semibold text-indigo-600 mb-5 pb-2 border-b border-gray-200">
               {editingTask ? 'Edit Task' : 'Add Task'}
@@ -296,7 +278,6 @@ const UserTasksManagement = () => {
           </div>
         </div>
       )}
-      {/* CSS for custom classes (animations/line-clamp) */}
       <style>{`
         @keyframes fadeIn {
             from { opacity: 0; }
