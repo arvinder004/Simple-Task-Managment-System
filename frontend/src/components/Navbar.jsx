@@ -20,10 +20,13 @@ const Navbar = () => {
     <nav style={navStyle}>
       <div style={leftSectionStyle}>
         <Link to="/" style={linkStyle}>Home</Link>
-        {user.role === 'admin' && (
-          <Link to="/admin" style={linkStyle}>Admin Dashboard</Link>
+        {user.role === 'admin' ? (
+          <>
+            <Link to="/admin" style={linkStyle}>Admin Dashboard</Link>
+          </>
+        ) : (
+          <Link to="/dashboard" style={linkStyle}>My Tasks</Link>
         )}
-        <Link to="/dashboard" style={linkStyle}>My Tasks</Link>
       </div>
       <div style={rightSectionStyle}>
         <span style={userInfoStyle}>Welcome, {user.username} ({user.role})</span>
