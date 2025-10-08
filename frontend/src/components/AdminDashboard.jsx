@@ -2,10 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllUsers, addUserByAdmin, updateUserByAdmin, deleteUserByAdmin } from '../services/api';
 
+// ----------------------------------------------------------------------
+// ROLE TAG UTILITY (Outputs Tailwind classes)
+// ----------------------------------------------------------------------
+
+const getRoleTagClasses = (role) => {
+  const base = 'px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider';
+  return role === 'admin'
+    ? `${base} bg-red-100 text-red-600` // Light Red background, Dark Red text
+    : `${base} bg-blue-100 text-blue-600`; // Light Blue background, Dark Blue text
+};
+
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -17,11 +30,15 @@ const AdminDashboard = () => {
   }, []);
 
   const fetchUsers = async () => {
+    setLoading(true);
     try {
       const response = await getAllUsers();
-      setUsers(response.data.users);
+      setUsers(response.data.users || []);
     } catch (error) {
       console.error('Failed to fetch users:', error);
+      setUsers([]);
+    } finally {
+        setLoading(false);
     }
   };
 
@@ -29,7 +46,8 @@ const AdminDashboard = () => {
     setIsModalOpen(true);
     if (user) {
       setEditingUser(user);
-      setFormData({ ...user, password: '' });
+      // Do NOT pre-fill the password for security reasons
+      setFormData({ username: user.username, password: '', role: user.role }); 
     } else {
       resetForm();
     }
@@ -54,6 +72,7 @@ const AdminDashboard = () => {
     try {
       const dataToSend = { ...formData };
       if (editingUser && !dataToSend.password) {
+        // If editing and password field is empty, remove it so the API doesn't clear the password
         delete dataToSend.password;
       }
       if (editingUser) {
@@ -79,71 +98,132 @@ const AdminDashboard = () => {
     }
   };
 
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex justify-center items-center text-xl font-semibold text-indigo-600">
+        Loading Users...
+      </div>
+    );
+  }
+
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>Admin Dashboard</h2>
-      <button onClick={() => openModal()} style={{ marginBottom: '20px' }}>Add New User</button>
+    <div className="p-5 max-w-6xl mx-auto sm:p-10">
+      {/* 1. Header and Add Button (Responsive) */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 pb-4 border-b-2 border-gray-100 gap-4">
+        <h2 className="text-2xl sm:text-3xl font-bold text-indigo-600">
+          Admin Dashboard
+        </h2>
+        <button 
+            onClick={() => openModal()} 
+            className="px-4 py-2 bg-emerald-500 text-white rounded-lg font-semibold transition duration-200 hover:bg-emerald-600 shadow-md hover:shadow-lg text-sm sm:text-base w-full sm:w-auto"
+        >
+            + Add New User
+        </button>
+      </div>
+      
+      {/* 2. User List (Responsive Card Grid) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {users.length === 0 ? (
+            <p className="col-span-full text-center text-gray-500 text-lg p-12">
+                No users found. Add a new user to get started.
+            </p>
+        ) : (
+            users.map((user) => (
+                <div key={user._id} className="border border-gray-200 rounded-xl p-5 bg-white shadow-lg flex flex-col justify-between transition duration-300 hover:shadow-xl">
+                    <div className="flex justify-between items-center mb-4 pb-3 border-b border-gray-100">
+                        <div className="text-xl font-bold text-indigo-600">
+                            {user.username}
+                        </div>
+                        <span className={getRoleTagClasses(user.role)}>{user.role}</span>
+                    </div>
 
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th>Username</th>
-            <th>Role</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user._id}>
-              <td>{user.username}</td>
-              <td>{user.role}</td>
-              <td>
-                <button onClick={() => openModal(user)}>Edit</button>
-                <button onClick={() => handleDelete(user._id)}>Delete</button>
-                <Link to={`/admin/user/${user._id}/tasks`}>
-                  <button>Manage Tasks</button>
-                </Link>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                        <button 
+                            onClick={() => openModal(user)} 
+                            className="px-3 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium transition duration-150 hover:bg-indigo-700 active:translate-y-px flex-grow sm:flex-grow-0"
+                        >
+                            Edit
+                        </button>
+                        <button 
+                            onClick={() => handleDelete(user._id)} 
+                            className="px-3 py-2 bg-pink-600 text-white rounded-md text-sm font-medium transition duration-150 hover:bg-pink-700 active:translate-y-px flex-grow sm:flex-grow-0"
+                        >
+                            Delete
+                        </button>
+                        <Link to={`/admin/user/${user._id}/tasks`} className="flex-grow sm:flex-grow-0">
+                            <button 
+                                className="px-3 py-2 bg-green-500 text-white rounded-md text-sm font-medium transition duration-150 hover:bg-green-600 active:translate-y-px w-full"
+                            >
+                                Manage Tasks
+                            </button>
+                        </Link>
+                    </div>
+                </div>
+            ))
+        )}
+      </div>
 
+      {/* 3. Modal for Add/Edit User */}
       {isModalOpen && (
-        <div style={modalOverlayStyle}>
-          <div style={modalContentStyle}>
-            <h2>{editingUser ? 'Edit User' : 'Add User'}</h2>
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50 p-4 transition-opacity duration-300">
+          <div className="bg-white p-6 sm:p-8 rounded-xl w-full max-w-md shadow-2xl transition-transform duration-300">
+            <h2 className="text-xl font-semibold text-indigo-600 mb-5 pb-2 border-b border-gray-100">
+              {editingUser ? 'Edit User' : 'Add User'}
+            </h2>
             <form onSubmit={handleSubmit}>
-              <input
-                type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleInputChange}
-                placeholder="Username"
-                required
-                style={inputStyle}
-              />
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                placeholder={editingUser ? 'New Password (optional)' : 'Password'}
-                {...(editingUser ? {} : { required: true })}
-                style={inputStyle}
-              />
-              <select
-                name="role"
-                value={formData.role}
-                onChange={handleInputChange}
-                style={inputStyle}
-              >
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
-              </select>
-              <div>
-                <button type="submit">{editingUser ? 'Update User' : 'Add User'}</button>
-                <button type="button" onClick={closeModal}>Cancel</button>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                <input
+                  type="text"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleInputChange}
+                  placeholder="Username"
+                  required
+                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  placeholder={editingUser ? 'New Password (optional)' : 'Password'}
+                  // Only require password if adding a new user
+                  {...(editingUser ? {} : { required: true })}
+                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                />
+              </div>
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                <select
+                  name="role"
+                  value={formData.role}
+                  onChange={handleInputChange}
+                  className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                >
+                  <option value="user">User</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col sm:flex-row-reverse gap-3 pt-4 border-t border-gray-100">
+                <button 
+                    type="submit" 
+                    className="px-4 py-2 bg-emerald-500 text-white rounded-lg font-medium transition duration-150 hover:bg-emerald-600 flex-grow sm:flex-grow-0"
+                >
+                    {editingUser ? 'Update User' : 'Add User'}
+                </button>
+                <button 
+                    type="button" 
+                    onClick={closeModal} 
+                    className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium transition duration-150 hover:bg-gray-300 flex-grow sm:flex-grow-0"
+                >
+                    Cancel
+                </button>
               </div>
             </form>
           </div>
@@ -151,31 +231,6 @@ const AdminDashboard = () => {
       )}
     </div>
   );
-};
-
-const modalOverlayStyle = {
-  position: 'fixed',
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  backgroundColor: 'rgba(0, 0, 0, 0.7)',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-};
-
-const modalContentStyle = {
-  backgroundColor: 'white',
-  padding: '20px',
-  borderRadius: '5px',
-  width: '300px',
-};
-
-const inputStyle = {
-  width: '100%',
-  padding: '10px',
-  marginBottom: '10px',
 };
 
 export default AdminDashboard;

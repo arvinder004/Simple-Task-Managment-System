@@ -8,6 +8,7 @@ import ProtectedRoutes from './components/ProtectedRoutes';
 import Layout from './components/Layout';
 import UserTasksManagement from './components/UserTaskManagement';
 import AdminDashboard from './components/AdminDashboard';
+import './index.css'
 
 const App = () => {
   return (
