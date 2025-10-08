@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
@@ -16,14 +17,58 @@ const Navbar = () => {
   }
 
   return (
-    <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 20px', background: '#f8f9fa', borderBottom: '1px solid #dee2e6' }}>
-      <Link to="/dashboard" style={{ textDecoration: 'none', color: 'black', fontWeight: 'bold' }}>Dashboard</Link>
-      <div>
-        <span>Welcome, {user.username} ({user.role})</span>
-        <button onClick={handleLogout} style={{ marginLeft: '15px' }}>Logout</button>
+    <nav style={navStyle}>
+      <div style={leftSectionStyle}>
+        <Link to="/" style={linkStyle}>Home</Link>
+        {user.role === 'admin' && (
+          <Link to="/admin" style={linkStyle}>Admin Dashboard</Link>
+        )}
+        <Link to="/dashboard" style={linkStyle}>My Tasks</Link>
+      </div>
+      <div style={rightSectionStyle}>
+        <span style={userInfoStyle}>Welcome, {user.username} ({user.role})</span>
+        <button onClick={handleLogout} style={logoutButtonStyle}>Logout</button>
       </div>
     </nav>
   );
 }
 
-export default Navbar
+const navStyle = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  padding: '10px 20px',
+  background: '#f8f9fa',
+  borderBottom: '1px solid #dee2e6',
+};
+
+const leftSectionStyle = {
+  display: 'flex',
+  gap: '20px',
+};
+
+const rightSectionStyle = {
+  display: 'flex',
+  alignItems: 'center',
+};
+
+const linkStyle = {
+  textDecoration: 'none',
+  color: '#007bff',
+  fontWeight: 'bold',
+};
+
+const userInfoStyle = {
+  marginRight: '15px',
+};
+
+const logoutButtonStyle = {
+  padding: '5px 10px',
+  background: '#dc3545',
+  color: 'white',
+  border: 'none',
+  borderRadius: '4px',
+  cursor: 'pointer',
+};
+
+export default Navbar;

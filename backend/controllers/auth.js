@@ -1,9 +1,14 @@
 const jwt = require('jsonwebtoken')
-require('dotenv').config()
-
 function auth(req, res, next) {
     try {
-        const token = req.headers.authorization;
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ 
+                message: "No token provided or token is not a Bearer token" 
+            });
+        }
+
+        const token = authHeader.split(' ')[1];
         if (!token) {
             return res.status(401).json({ 
                 message: "No token" 
@@ -19,4 +24,4 @@ function auth(req, res, next) {
     }
 }
 
-module.exports = auth
+module.exports = auth;

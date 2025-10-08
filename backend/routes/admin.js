@@ -7,7 +7,7 @@ const isAdmin = require("../controllers/isAdmin");
 const auth = require('../controllers/auth')
 
 /*
-Admins will be added directly in the database
+Admins will be added directly in the database or by any other Admin
 Admins cannot directly register themselves in the app
 Admins can login through the same endpoint as other users
  */
@@ -66,6 +66,8 @@ router.put('/update-user/:id', auth, isAdmin, async (req, res) => {
         const updates = req.body;
         if (updates.password) {
             updates.password = await bcrypt.hash(updates.password, 10);
+        } else {
+            delete updates.password;
         }
         const user = await User.findByIdAndUpdate(req.params.id, updates, { new: true });
         if (!user) {

@@ -13,6 +13,7 @@ router.post('/add-task', auth, async(req, res) => {
         const description = req.body.description;
         const status = req.body.status;
         const priority = req.body.priority;
+        const dueDate = req.body.dueDate;
 
         const assignedUser = await User.findOne({
             _id: userId
@@ -29,6 +30,7 @@ router.post('/add-task', auth, async(req, res) => {
             description: description,
             status: status,
             priority: priority,
+            dueDate: dueDate,
             assignedTo: userId
         });
 
@@ -37,6 +39,7 @@ router.post('/add-task', auth, async(req, res) => {
             task
         });
     } catch (err) {
+        console.log(err)
         res.status(500).json({ message: 'Server Error' });
     }
 });

@@ -6,6 +6,8 @@ import RegisterPage from './components/RegisterPage';
 import Dashboard from './components/Dashboard';
 import ProtectedRoutes from './components/ProtectedRoutes';
 import Layout from './components/Layout';
+import UserTasksManagement from './components/UserTaskManagement';
+import AdminDashboard from './components/AdminDashboard';
 
 const App = () => {
   return (
@@ -25,6 +27,27 @@ const App = () => {
             </ProtectedRoutes>
           } 
         />
+        <Route 
+          path="/admin" 
+          element={
+            <ProtectedRoutes>
+              <Layout>
+                <AdminDashboard />
+              </Layout>
+            </ProtectedRoutes>
+          } 
+        />
+        <Route 
+          path="/admin/user/:userId/tasks" 
+          element={
+            <ProtectedRoutes>
+              <Layout>
+                <UserTasksManagement />
+              </Layout>
+            </ProtectedRoutes>
+          } 
+        />
+        
       </Routes>
     </Router>
   );
