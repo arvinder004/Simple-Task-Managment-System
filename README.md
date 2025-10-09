@@ -1,3 +1,5 @@
+**Website**: [simple-task-mgmt.netlify.app](https://simple-task-mgmt.netlify.app/)
+
 # Backend Documentation
 
 ## Folder Structure
@@ -51,3 +53,45 @@
 
 - Start the server with `node server.js` (ensure `.env` is configured).
 - Use the endpoints above with proper authentication (JWT in `Authorization` header).
+
+---
+
+# Frontend: How It Works
+
+## Overview
+The frontend is a React app (built with Vite) that talks to the backend REST API. It handles authentication (JWT), role-based access (user vs admin), and task management (CRUD) through a small service layer that wraps `axios`.
+
+## Routing & Layout
+- `Layout.jsx`: Shared shell (e.g., navbar) wrapping all pages.
+- `HomePage.jsx`: Landing page with links to login/register.
+- `LoginPage.jsx` / `RegisterPage.jsx`: Auth forms; on success a JWT is stored in `localStorage` and the user is redirected to their dashboard.
+- `ProtectedRoutes.jsx`: Guards routes that require authentication. If there’s no token, the user is redirected to login.
+- `Dashboard.jsx`: Decides which dashboard to render based on the authenticated user’s role.
+  - `UserDashboard.jsx`: For regular users.
+  - `AdminDashboard.jsx`: For admins.
+
+## Authentication Flow
+1. User submits credentials on `LoginPage.jsx`.
+2. `frontend/src/services/api.js` calls `POST /api/auth/login`.
+3. On success, the JWT is saved to `localStorage` and attached to subsequent requests via an axios request interceptor.
+4. Protected routes check for a token; absence redirects to login.
+
+## Data Layer (API Service)
+- `frontend/src/services/api.js` centralizes HTTP calls via an `axios` instance:
+  - Request interceptor: adds `Authorization: Bearer <token>` if present.
+  - Response interceptor: logs errors and forwards them to the UI.
+- Exposed functions map to backend endpoints, e.g., `signin`, `signup`, `getTasks`, `addTask`, `updateTask`, `deleteTask`.
+
+## User Task Management
+- `UserTaskManagement.jsx` (used by `UserDashboard.jsx`) fetches the user’s tasks and displays them.
+- Users can create, update, and delete tasks; each action calls the corresponding API function and updates the UI.
+
+## Admin Capabilities
+- `AdminDashboard.jsx` provides management views:
+  - View all non-admin users
+  - Create/update/delete users
+  - View and manage a specific user’s tasks
+
+## State & Feedback
+- Minimal global state; components fetch as needed.
+- API calls surface errors in the console and to the UI (e.g., toasts/messages) where implemented.
