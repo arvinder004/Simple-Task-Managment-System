@@ -6,7 +6,7 @@ const cors = require('cors')
 const app = express();
 app.use(express.json());
 app.use(cors({
-  origin: '*',
+  origin: 'https://simple-task-mgmt.netlify.app/',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Specify allowed methods
   allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token'], // Specify allowed headers
 }));
