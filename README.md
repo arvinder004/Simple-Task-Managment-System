@@ -69,6 +69,7 @@ The frontend is a React app (built with Vite) that talks to the backend REST API
 - `Dashboard.jsx`: Decides which dashboard to render based on the authenticated user’s role.
   - `UserDashboard.jsx`: For regular users.
   - `AdminDashboard.jsx`: For admins.
+ - `NotFound.jsx`: Rendered for any unknown route (wildcard `path="*"`), includes a link back to `/`.
 
 ## Authentication Flow
 1. User submits credentials on `LoginPage.jsx`.
