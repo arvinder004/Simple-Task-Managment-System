@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API = axios.create({baseURL: 'http://localhost:3000/api', headers: {
+const API = axios.create({baseURL: 'https://simple-task-managment-system.onrender.com/api', headers: {
     'Content-Type': 'application/json',
   },});
 API.interceptors.request.use((req) => {
