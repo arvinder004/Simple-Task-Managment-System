@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ModalPortal from './ModalPortal';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getUserTasks, addUserTasks, updateUserTasks, deleteUserTasks } from '../services/api';
 
@@ -196,8 +197,9 @@ const UserTasksManagement = () => {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50 p-4 animate-fade-in">
-          <div className="bg-white p-6 sm:p-8 rounded-xl w-full max-w-md shadow-2xl animate-slide-in">
+        <ModalPortal>
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-[9999] p-4 animate-fade-in">
+          <div className="bg-white p-6 sm:p-8 rounded-xl w-full max-w-md shadow-2xl animate-slide-in relative z-[10000]">
             <h2 className="text-xl font-semibold text-indigo-600 mb-5 pb-2 border-b border-gray-200">
               {editingTask ? 'Edit Task' : 'Add Task'}
             </h2>
@@ -277,6 +279,7 @@ const UserTasksManagement = () => {
             </form>
           </div>
         </div>
+        </ModalPortal>
       )}
       <style>{`
         @keyframes fadeIn {
