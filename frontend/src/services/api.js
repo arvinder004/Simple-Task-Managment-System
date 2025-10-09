@@ -1,8 +1,12 @@
 import axios from 'axios';
 
-const API = axios.create({baseURL: 'https://simple-task-managment-system.onrender.com/api', headers: {
+const apiBaseUrl = 'https://simple-task-managment-system.onrender.com/api';
+const API = axios.create({
+  baseURL: apiBaseUrl,
+  headers: {
     'Content-Type': 'application/json',
-  },});
+  },
+});
 API.interceptors.request.use((req) => {
   console.log('API Request:', req.method, req.url);
   if (localStorage.getItem('token')) {
