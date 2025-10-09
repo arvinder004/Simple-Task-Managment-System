@@ -6,6 +6,7 @@ import RegisterPage from './components/RegisterPage';
 import Dashboard from './components/Dashboard';
 import ProtectedRoutes from './components/ProtectedRoutes';
 import Layout from './components/Layout';
+import NotFound from './components/NotFound';
 import UserTasksManagement from './components/UserTaskManagement';
 import AdminDashboard from './components/AdminDashboard';
 import './index.css'
@@ -48,7 +49,7 @@ const App = () => {
             </ProtectedRoutes>
           } 
         />
-        
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );
